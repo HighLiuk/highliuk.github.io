@@ -92,7 +92,8 @@
           this.x = x
           this.y = y
           this.dx = 1
-          this.dy = (Math.random() - 0.5) * 8
+          this.dy =
+            (0.25 + Math.random() * 3.75) * (Math.random() >= 0.5 ? 1 : -1)
         }
 
         draw() {
