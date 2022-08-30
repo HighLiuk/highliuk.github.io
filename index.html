@@ -45,6 +45,10 @@
         mouse.y = Math.round(e.clientY - rect.top)
       })
 
+      function pointsAreClose(x0, y0, x1, y1, r) {
+        return (x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1) < r * r
+      }
+
       class Racket {
         static distance = 40
         static thickness = 15
@@ -181,6 +185,55 @@
 
             return
           }
+
+          // bounce on the top right corner of the left racket
+          if (
+            pointsAreClose(
+              this.x,
+              this.y,
+              leftRacket.center.x + Racket.thickness / 2,
+              leftRacket.center.y - Racket.length / 2,
+              Ball.radius
+            )
+          ) {
+            this.flipVelocity(
+              this.x - leftRacket.center.x - Racket.thickness / 2,
+              this.y - leftRacket.center.y + Racket.length / 2
+            )
+            this.addVelocity()
+
+            return
+          }
+
+          // bounce on the bottom right corner of the left racket
+          if (
+            pointsAreClose(
+              this.x,
+              this.y,
+              leftRacket.center.x + Racket.thickness / 2,
+              leftRacket.center.y + Racket.length / 2,
+              Ball.radius
+            )
+          ) {
+            this.flipVelocity(
+              this.x - leftRacket.center.x - Racket.thickness / 2,
+              this.y - leftRacket.center.y - Racket.length / 2
+            )
+            this.addVelocity()
+
+            return
+          }
+        }
+
+        flipVelocity(relativeX, relativeY) {
+          const dist = relativeX * relativeX + relativeY * relativeY
+          const a = (relativeX * relativeX - relativeY * relativeY) / dist
+          const b = (-2 * relativeX * relativeY) / dist
+          const prevDx = this.dx
+          const prevDy = this.dy
+
+          this.dx = -a * prevDx + b * prevDy
+          this.dy = b * prevDx + a * prevDy
         }
 
         addVelocity(extraVelocity = 0.25) {
