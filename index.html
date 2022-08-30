@@ -151,14 +151,14 @@
         }
       }
 
-      const ball = new Ball(canvas.width / 2, canvas.height / 2)
-      const playerRacket = new Racket("left", false)
-      const enemyRacket = new Racket("right", true)
+      let ball
+      let playerRacket
+      let enemyRacket
+      let leftRacket
+      let rightRacket
+      let isGameOver
 
-      const leftRacket = playerRacket
-      const rightRacket = enemyRacket
-
-      let isGameOver = false
+      init()
 
       function update() {
         playerRacket.draw()
@@ -186,6 +186,23 @@
         ctx.textBaseline = "middle"
         ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2)
       }
+
+      function init() {
+        ball = new Ball(canvas.width / 2, canvas.height / 2)
+        playerRacket = new Racket("left", false)
+        enemyRacket = new Racket("right", true)
+
+        leftRacket = playerRacket
+        rightRacket = enemyRacket
+
+        isGameOver = false
+      }
+
+      addEventListener("click", () => {
+        if (isGameOver) {
+          init()
+        }
+      })
 
       animate()
     </script>
