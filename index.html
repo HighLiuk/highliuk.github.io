@@ -108,6 +108,7 @@
         }
 
         bounce() {
+          // bounce on top or bottom
           if (
             this.y + Ball.radius > canvas.height ||
             this.y - Ball.radius < 0
@@ -115,17 +116,25 @@
             this.dy = -this.dy
           }
 
+          // bounce on the right side
           if (
-            (this.x + Ball.radius >
+            this.x + Ball.radius >
               rightRacket.center.x - Racket.thickness / 2 &&
-              this.y > rightRacket.center.y - Racket.length / 2 &&
-              this.y < rightRacket.center.y + Racket.length / 2) ||
-            (this.x - Ball.radius <
-              leftRacket.center.x + Racket.thickness / 2 &&
-              this.y > leftRacket.center.y - Racket.length / 2 &&
-              this.y < leftRacket.center.y + Racket.length / 2)
+            this.y > rightRacket.center.y - Racket.length / 2 &&
+            this.y < rightRacket.center.y + Racket.length / 2
           ) {
-            this.dx = -(this.dx + 0.25 * Math.sign(this.dx))
+            this.x = rightRacket.center.x - Racket.thickness / 2 - Ball.radius
+            this.dx = -this.dx - 0.25
+          }
+
+          // bounce on the left side
+          if (
+            this.x - Ball.radius < leftRacket.center.x + Racket.thickness / 2 &&
+            this.y > leftRacket.center.y - Racket.length / 2 &&
+            this.y < leftRacket.center.y + Racket.length / 2
+          ) {
+            this.x = leftRacket.center.x + Racket.thickness / 2 + Ball.radius
+            this.dx = -this.dx + 0.25
           }
         }
 
