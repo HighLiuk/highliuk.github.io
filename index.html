@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pong</title>
+
+    <style>
+      body {
+        text-align: center;
+        background: azure;
+        font-family: sans-serif;
+      }
+
+      h1 {
+        text-transform: uppercase;
+      }
+
+      canvas {
+        /* width: 80%; */
+        background: lightsteelblue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pong</h1>
+
+    <canvas width="800" height="600">
+      Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <script>
+      const canvas = document.querySelector("canvas")
+      const ctx = canvas.getContext("2d")
+      const mouse = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+      }
+
+      addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect()
+
+        mouse.x = Math.round(e.clientX - rect.left)
+        mouse.y = Math.round(e.clientY - rect.top)
+      })
+
+      class Racket {
+        static distance = 40
+        static thickness = 15
+        static length = 100
+        static color = "black"
+
+        constructor(side, isEnemy) {
+          this.side = side
+          this.isEnemy = isEnemy
+
+          this.update()
+        }
+
+        update() {
+          this.center = {
+            x:
+              this.side === "left"
+                ? Racket.distance
+                : canvas.width - Racket.distance,
+            y: this.isEnemy ? ball.y : mouse.y,
+          }
+        }
+
+        draw() {
+          this.update()
+
+          ctx.fillStyle = Racket.color
+          ctx.fillRect(
+            this.center.x - Racket.thickness / 2,
+            Math.min(
+              canvas.height - Racket.length,
+              Math.max(0, this.center.y - Racket.length / 2)
+            ),
+            Racket.thickness,
+            Racket.length
+          )
+        }
+      }
+
+      class Ball {
+        static radius = 10
+        static color = "gray"
+
+        constructor(x, y) {
+          this.x = x
+          this.y = y
+          this.dx = 1
+          this.dy = (Math.random() - 0.5) * 8
+        }
+
+        draw() {
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, Ball.radius, 0, Math.PI * 2)
+          ctx.fillStyle = Ball.color
+          ctx.fill()
+        }
+
+        move() {
+          this.x += this.dx
+          this.y += this.dy
+        }
+
+        bounce() {
+          if (
+            this.y + Ball.radius > canvas.height ||
+            this.y - Ball.radius < 0
+          ) {
+            this.dy = -this.dy
+          }
+
+          if (
+            (this.x + Ball.radius >
+              rightRacket.center.x - Racket.thickness / 2 &&
+              this.y > rightRacket.center.y - Racket.length / 2 &&
+              this.y < rightRacket.center.y + Racket.length / 2) ||
+            (this.x - Ball.radius <
+              leftRacket.center.x + Racket.thickness / 2 &&
+              this.y > leftRacket.center.y - Racket.length / 2 &&
+              this.y < leftRacket.center.y + Racket.length / 2)
+          ) {
+            this.dx = -(this.dx + 0.25 * Math.sign(this.dx))
+          }
+        }
+
+        checkGameOver() {
+          if (this.x + Ball.radius < 0 || this.x - Ball.radius > canvas.width) {
+            isGameOver = true
+          }
+        }
+
+        update() {
+          this.move()
+          this.bounce()
+          this.checkGameOver()
+        }
+      }
+
+      const ball = new Ball(canvas.width / 2, canvas.height / 2)
+      const playerRacket = new Racket("left", false)
+      const enemyRacket = new Racket("right", true)
+
+      const leftRacket = playerRacket
+      const rightRacket = enemyRacket
+
+      let isGameOver = false
+
+      function update() {
+        playerRacket.draw()
+        enemyRacket.draw()
+        ball.draw()
+
+        ball.update()
+      }
+
+      function animate() {
+        requestAnimationFrame(animate)
+
+        if (isGameOver) {
+          gameOver()
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+          update()
+        }
+      }
+
+      function gameOver() {
+        ctx.textAlign = "center"
+        ctx.fillStyle = "#ee0000"
+        ctx.font = "7rem Arial"
+        ctx.textBaseline = "middle"
+        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2)
+      }
+
+      animate()
+    </script>
+  </body>
+</html>
