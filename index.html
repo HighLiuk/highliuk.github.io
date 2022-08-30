@@ -118,7 +118,7 @@
             this.y + Ball.radius > canvas.height ||
             this.y - Ball.radius < 0
           ) {
-            this.dy = -this.dy
+            this.dy *= -1
           }
 
           // bounce on the right side
@@ -130,9 +130,8 @@
           ) {
             this.x = rightRacket.center.x - Racket.thickness / 2 - Ball.radius
 
-            const vIncrement = 1 + 0.25 / this.velocity()
-            this.dx *= -vIncrement
-            this.dy *= vIncrement
+            this.dx *= -1
+            this.addVelocity()
           }
 
           // bounce on the left side
@@ -143,10 +142,16 @@
           ) {
             this.x = leftRacket.center.x + Racket.thickness / 2 + Ball.radius
 
-            const vIncrement = 1 + 0.25 / this.velocity()
-            this.dx *= -vIncrement
-            this.dy *= vIncrement
+            this.dx *= -1
+            this.addVelocity()
           }
+        }
+
+        addVelocity(extraVelocity = 0.25) {
+          const vIncrement = 1 + extraVelocity / this.velocity()
+
+          this.dx *= vIncrement
+          this.dy *= vIncrement
         }
 
         checkGameOver() {
