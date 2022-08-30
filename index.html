@@ -119,9 +119,11 @@
             this.y - Ball.radius < 0
           ) {
             this.dy *= -1
+
+            return
           }
 
-          // bounce on the right side
+          // bounce on the left side of the right racket
           if (
             this.x + Ball.radius >
               rightRacket.center.x - Racket.thickness / 2 &&
@@ -132,9 +134,11 @@
 
             this.dx *= -1
             this.addVelocity()
+
+            return
           }
 
-          // bounce on the left side
+          // bounce on the right side of the left racket
           if (
             this.x - Ball.radius < leftRacket.center.x + Racket.thickness / 2 &&
             this.y > leftRacket.center.y - Racket.length / 2 &&
@@ -144,6 +148,38 @@
 
             this.dx *= -1
             this.addVelocity()
+
+            return
+          }
+
+          // bounce on the top side of the left racket
+          if (
+            this.y + Ball.radius > leftRacket.center.y - Racket.length / 2 &&
+            this.y - Ball.radius < leftRacket.center.y - Racket.length / 2 &&
+            this.x > leftRacket.center.x - Racket.thickness / 2 &&
+            this.x < leftRacket.center.x + Racket.thickness / 2
+          ) {
+            this.y = leftRacket.center.y - Racket.length / 2 - Ball.radius
+
+            this.dy *= -1
+            this.addVelocity()
+
+            return
+          }
+
+          // bounce on the bottom side of the left racket
+          if (
+            this.y - Ball.radius < leftRacket.center.y + Racket.length / 2 &&
+            this.y + Ball.radius > leftRacket.center.y + Racket.length / 2 &&
+            this.x > leftRacket.center.x - Racket.thickness / 2 &&
+            this.x < leftRacket.center.x + Racket.thickness / 2
+          ) {
+            this.y = leftRacket.center.y + Racket.length / 2 + Ball.radius
+
+            this.dy *= -1
+            this.addVelocity()
+
+            return
           }
         }
 
